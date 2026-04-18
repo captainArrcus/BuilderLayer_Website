@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BuilderLayer | Impressum</title>
+  <meta name="description" content="Impressum der BuilderLayer Website.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="legal-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="./index.html">BuilderLayer</a>
+      <a class="back-link" href="./index.html">Zurueck zur Startseite</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="legal-card reveal">
+      <p class="eyebrow">Rechtliche Angaben</p>
+      <h1 class="legal-title">Impressum</h1>
+      <p class="intro">Angaben gemaess § 5 DDG</p>
+
+      <div class="legal-grid">
+        <article class="legal-block">
+          <h2>Anbieter</h2>
+          <p>
+            Max Muster - Musterberuf<br>
+            c/o Beispielbuero<br>
+            Musterweg<br>
+            12345 Musterstadt
+          </p>
+        </article>
+
+        <article class="legal-block">
+          <h2>Vertreten durch</h2>
+          <p>Max Muster</p>
+        </article>
+
+        <article class="legal-block">
+          <h2>Kontakt</h2>
+          <p>
+            Telefon: 01234-789456<br>
+            Fax: 1234-56789<br>
+            E-Mail: <a href="mailto:max@muster.de">max@muster.de</a>
+          </p>
+        </article>
+
+        <article class="legal-block">
+          <h2>Steuerliche Angaben</h2>
+          <p>
+            <strong>Umsatzsteuer-ID:</strong><br>
+            Umsatzsteuer-Identifikationsnummer gemaess §27a Umsatzsteuergesetz: Musterustid.<br><br>
+            <strong>Wirtschafts-ID:</strong><br>
+            Musterwirtschaftsid
+          </p>
+        </article>
+
+        <article class="legal-block">
+          <h2>Aufsichtsbehoerde</h2>
+          <p>Musteraufsicht Musterstadt</p>
+        </article>
+
+        <article class="legal-block">
+          <h2>Verantwortlich fuer Inhalte</h2>
+          <p>
+            Verantwortlich fuer den Inhalt nach § 18 Abs. 2 MStV:<br>
+            Max Muster<br>
+            Musterweg<br>
+            12345 Musterstadt
+          </p>
+        </article>
+
+        <article class="legal-block full">
+          <h2>Verbraucherstreitbeilegung / Universalschlichtungsstelle</h2>
+          <p>Wir nehmen nicht an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teil und sind dazu auch nicht verpflichtet.</p>
+        </article>
+
+        <article class="legal-block full">
+          <h2>Datenschutzerklaerung</h2>
+          <p>Unter dem folgenden Link finden Sie unsere <a href="./datenschutz.html">Datenschutzerklaerung</a>.</p>
+        </article>
+
+        <article class="legal-block full">
+          <h2>Quelle des Rechtstextes</h2>
+          <p>
+            Erstellt mit dem <a href="https://impressum-generator.de" rel="dofollow">Impressum-Generator</a> von WebsiteWissen.com,
+            dem Ratgeber fuer <a href="https://websitewissen.com/website-erstellen" rel="dofollow">Website-Erstellung</a>,
+            <a href="https://websitewissen.com/homepage-baukasten-vergleich" rel="dofollow">Homepage-Baukaesten</a> und
+            <a href="https://websitewissen.com/shopsysteme-vergleich" rel="dofollow">Shopsysteme</a>.
+            Rechtstext von der <a href="https://www.kanzlei-hasselbach.de/" rel="dofollow">Kanzlei Hasselbach</a>.
+          </p>
+        </article>
+      </div>
+
+      <p class="footer-note">BuilderLayer | Impressum</p>
+    </section>
+  </main>
+
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.14 }
+    );
+
+    document.querySelectorAll(".reveal").forEach((section) => observer.observe(section));
+  </script>
+</body>
+</html>
