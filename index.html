@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BuilderLayer | AI-native Cobot Orchestration</title>
+  <meta name="description" content="BuilderLayer macht aus Cobot-Einzelskills produktive Multi-Step-Workflows fuer den Mittelstand.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563EB;
+      --secondary: #14532D;
+      --accent: #6D28D9;
+      --bg: #0B1020;
+      --bg-light: #111827;
+      --bg-card: #1a2235;
+      --text: #E5E7EB;
+      --text-muted: #9CA3AF;
+      --text-dim: #6B7280;
+      --border: #1e2d4a;
+      --ok: #22c55e;
+      --danger: #ef4444;
+      --surface: rgba(26, 34, 53, 0.78);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 520px at 8% -10%, rgba(37, 99, 235, 0.3), transparent 58%),
+        radial-gradient(760px 560px at 92% -18%, rgba(109, 40, 217, 0.28), transparent 60%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-light) 100%);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .wrap {
+      width: min(1080px, 92vw);
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(11, 16, 32, 0.72);
+      border-bottom: 1px solid rgba(30, 45, 74, 0.6);
+    }
+
+    .header-inner {
+      min-height: 72px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(17, 24, 39, 0.9);
+    }
+
+    .lang-btn {
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.74rem;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .lang-btn[aria-pressed="true"] {
+      color: white;
+      background: linear-gradient(120deg, var(--primary), var(--accent));
+    }
+
+    main {
+      padding: 38px 0 70px;
+      display: grid;
+      gap: 20px;
+    }
+
+    section {
+      border: 1px solid rgba(30, 45, 74, 0.9);
+      background: var(--surface);
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: 0 22px 65px rgba(0, 0, 0, 0.24);
+    }
+
+    .hero {
+      padding: 34px 30px;
+      background:
+        linear-gradient(135deg, rgba(37, 99, 235, 0.13), rgba(109, 40, 217, 0.13)),
+        rgba(26, 34, 53, 0.86);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.76rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #9bbdff;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(1.9rem, 4.7vw, 3.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+      max-width: 19ch;
+    }
+
+    .hero h1 strong {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-copy {
+      max-width: 70ch;
+      color: var(--text-muted);
+      font-size: 1.02rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .badge {
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      padding: 8px 12px;
+      border: 1px solid transparent;
+    }
+
+    .badge.b1 {
+      color: #93c5fd;
+      border-color: rgba(37, 99, 235, 0.45);
+      background: rgba(37, 99, 235, 0.16);
+    }
+
+    .badge.b2 {
+      color: #c4b5fd;
+      border-color: rgba(109, 40, 217, 0.45);
+      background: rgba(109, 40, 217, 0.16);
+    }
+
+    .badge.b3 {
+      color: #86efac;
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(20, 83, 45, 0.4);
+    }
+
+    .hero-actions {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(120deg, var(--primary), var(--accent));
+    }
+
+    .btn-ghost {
+      color: var(--text);
+      border-color: rgba(156, 163, 175, 0.5);
+      background: rgba(17, 24, 39, 0.68);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.45rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-index {
+      color: #7da8ff;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 0.78rem;
+    }
+
+    .lead {
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      max-width: 74ch;
+    }
+
+    .statement {
+      padding: 14px;
+      border-left: 3px solid var(--primary);
+      border-radius: 0 12px 12px 0;
+      background: rgba(37, 99, 235, 0.12);
+      margin-bottom: 15px;
+      color: #dbe7ff;
+      font-weight: 700;
+    }
+
+    .workflow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 14px 0;
+    }
+
+    .step {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--border);
+      font-size: 0.86rem;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .arrow {
+      color: #809bc8;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.75);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .card h3 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .card.c1 {
+      border-top: 2px solid var(--primary);
+    }
+
+    .card.c2 {
+      border-top: 2px solid var(--accent);
+    }
+
+    .card.c3 {
+      border-top: 2px solid var(--ok);
+    }
+
+    .stack {
+      display: grid;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .layer {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 11px 13px;
+      background: rgba(17, 24, 39, 0.86);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .layer strong {
+      font-size: 0.9rem;
+    }
+
+    .layer span {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+    }
+
+    .layer.top {
+      border-color: rgba(109, 40, 217, 0.5);
+    }
+
+    .layer.mid {
+      border-color: rgba(37, 99, 235, 0.5);
+    }
+
+    .layer.low {
+      border-color: rgba(34, 197, 94, 0.5);
+    }
+
+    .bullet-list {
+      display: grid;
+      gap: 9px;
+      list-style: none;
+      margin-top: 10px;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-left: 18px;
+      color: var(--text-muted);
+    }
+
+    .bullet-list li::before {
+      content: "->";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--primary);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(17, 24, 39, 0.9);
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.24rem;
+      font-family: "Space Grotesk", sans-serif;
+      margin-bottom: 4px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat span {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      display: block;
+    }
+
+    .founder {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 14px;
+    }
+
+    .founder-main {
+      background: linear-gradient(140deg, rgba(37, 99, 235, 0.14), rgba(109, 40, 217, 0.14));
+      border: 1px solid rgba(37, 99, 235, 0.36);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .founder-main h3 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .founder-main p {
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .cred-list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .cred-list li {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px;
+      background: rgba(17, 24, 39, 0.85);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .cred-list strong {
+      color: #dbe6ff;
+      display: block;
+      margin-bottom: 3px;
+      font-size: 0.92rem;
+    }
+
+    .call {
+      text-align: center;
+      background:
+        linear-gradient(140deg, rgba(37, 99, 235, 0.16), rgba(20, 83, 45, 0.2)),
+        rgba(17, 24, 39, 0.86);
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .call h2 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      margin-bottom: 8px;
+    }
+
+    .call p {
+      color: var(--text-muted);
+      max-width: 62ch;
+      margin: 0 auto;
+    }
+
+    .call-meta {
+      margin-top: 14px;
+      color: #9bd0ab;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.03em;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    footer {
+      margin-top: 4px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(30, 45, 74, 0.9);
+      color: var(--text-dim);
+      font-size: 0.86rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 960px) {
+      .header-inner {
+        grid-template-columns: 1fr;
+        padding: 10px 0;
+        gap: 8px;
+      }
+
+      .tagline {
+        text-align: left;
+      }
+
+      .grid-3,
+      .stats,
+      .founder,
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      main {
+        padding-top: 22px;
+      }
+
+      section {
+        padding: 20px;
+      }
+
+      .hero {
+        padding: 24px 20px;
+      }
+
+      .workflow {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        display: none;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .hero-actions {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top">BuilderLayer</a>
+      <p class="tagline" data-i18n="headerTagline"></p>
+      <div class="lang-switch" role="group" aria-label="Language selector">
+        <button class="lang-btn" type="button" data-lang="de" aria-pressed="true">DE</button>
+        <button class="lang-btn" type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero reveal" id="top">
+      <p class="eyebrow" data-i18n="heroEyebrow"></p>
+      <h1 data-i18n-html="heroTitle"></h1>
+      <p class="hero-copy" data-i18n-html="heroCopy"></p>
+
+      <div class="badge-row">
+        <span class="badge b1" data-i18n="badgeOne"></span>
+        <span class="badge b2" data-i18n="badgeTwo"></span>
+        <span class="badge b3" data-i18n="badgeThree"></span>
+      </div>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="mailto:marcus@builderlayer.com?subject=BuilderLayer%20Gespaech" data-i18n="heroCtaPrimary"></a>
+        <a class="btn btn-ghost" href="#problem" data-i18n="heroCtaSecondary"></a>
+      </div>
+    </section>
+
+    <section class="reveal" id="problem">
+      <div class="section-head">
+        <h2 data-i18n="problemHeading"></h2>
+        <span class="section-index">01</span>
+      </div>
+      <p class="lead" data-i18n-html="problemLead"></p>
+      <p class="statement" data-i18n-html="problemStatement"></p>
+
+      <div class="workflow" aria-label="Workflow example">
+        <div class="step" data-i18n="flowOne"></div>
+        <div class="arrow">-></div>
+        <div class="step" data-i18n="flowTwo"></div>
+        <div class="arrow">-></div>
+        <div class="step" data-i18n="flowThree"></div>
+        <div class="arrow">-></div>
+        <div class="step" data-i18n="flowFour"></div>
+        <div class="arrow">-></div>
+        <div class="step" data-i18n="flowFive"></div>
+      </div>
+
+      <p class="lead" data-i18n-html="problemOutro"></p>
+    </section>
+
+    <section class="reveal" id="solution">
+      <div class="section-head">
+        <h2 data-i18n="solutionHeading"></h2>
+        <span class="section-index">02</span>
+      </div>
+      <p class="lead" data-i18n-html="solutionLead"></p>
+
+      <div class="grid-3">
+        <article class="card c1">
+          <h3 data-i18n="pillarOneTitle"></h3>
+          <p data-i18n="pillarOneBody"></p>
+        </article>
+        <article class="card c2">
+          <h3 data-i18n="pillarTwoTitle"></h3>
+          <p data-i18n="pillarTwoBody"></p>
+        </article>
+        <article class="card c3">
+          <h3 data-i18n="pillarThreeTitle"></h3>
+          <p data-i18n="pillarThreeBody"></p>
+        </article>
+      </div>
+
+      <div class="stack" aria-label="Architecture stack">
+        <div class="layer top">
+          <strong data-i18n="layerTopTitle"></strong>
+          <span data-i18n="layerTopBody"></span>
+        </div>
+        <div class="layer mid">
+          <strong data-i18n="layerMidTitle"></strong>
+          <span data-i18n="layerMidBody"></span>
+        </div>
+        <div class="layer low">
+          <strong data-i18n="layerLowTitle"></strong>
+          <span data-i18n="layerLowBody"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="reveal" id="market">
+      <div class="section-head">
+        <h2 data-i18n="marketHeading"></h2>
+        <span class="section-index">03</span>
+      </div>
+      <div class="grid-2">
+        <div>
+          <p class="lead" data-i18n-html="marketLead"></p>
+          <ul class="bullet-list">
+            <li data-i18n="whyOne"></li>
+            <li data-i18n="whyTwo"></li>
+            <li data-i18n="whyThree"></li>
+            <li data-i18n="whyFour"></li>
+            <li data-i18n="whyFive"></li>
+          </ul>
+        </div>
+        <div>
+          <div class="stats">
+            <div class="stat">
+              <strong data-i18n="statOneValue"></strong>
+              <span data-i18n="statOneLabel"></span>
+            </div>
+            <div class="stat">
+              <strong data-i18n="statTwoValue"></strong>
+              <span data-i18n="statTwoLabel"></span>
+            </div>
+            <div class="stat">
+              <strong data-i18n="statThreeValue"></strong>
+              <span data-i18n="statThreeLabel"></span>
+            </div>
+          </div>
+          <p class="lead" style="margin-top: 12px;" data-i18n-html="marketTail"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="reveal" id="founder">
+      <div class="section-head">
+        <h2 data-i18n="founderHeading"></h2>
+        <span class="section-index">04</span>
+      </div>
+      <div class="founder">
+        <article class="founder-main">
+          <h3 data-i18n="founderName"></h3>
+          <span data-i18n="founderRole"></span>
+          <p data-i18n="founderBio"></p>
+        </article>
+        <ul class="cred-list">
+          <li><strong data-i18n="credOneTitle"></strong><span data-i18n="credOneBody"></span></li>
+          <li><strong data-i18n="credTwoTitle"></strong><span data-i18n="credTwoBody"></span></li>
+          <li><strong data-i18n="credThreeTitle"></strong><span data-i18n="credThreeBody"></span></li>
+          <li><strong data-i18n="credFourTitle"></strong><span data-i18n="credFourBody"></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="call reveal" id="call">
+      <h2 data-i18n="callHeading"></h2>
+      <p data-i18n="callBody"></p>
+      <div class="call-meta">
+        <span data-i18n="callMetaOne"></span>
+        <span data-i18n="callMetaTwo"></span>
+        <span data-i18n="callMetaThree"></span>
+      </div>
+      <div class="hero-actions" style="justify-content:center; margin-top:18px;">
+        <a class="btn btn-primary" href="mailto:marcus@builderlayer.com?subject=BuilderLayer%20Call" data-i18n="callCta"></a>
+      </div>
+    </section>
+
+    <footer>
+      <span data-i18n="footerLeft"></span>
+      <span data-i18n="footerRight"></span>
+    </footer>
+  </main>
+
+  <script>
+    // If you want automatic redirect from github.io to your own domain, set this value.
+    const CANONICAL_HOST = "";
+
+    if (
+      CANONICAL_HOST &&
+      window.location.hostname.endsWith("github.io") &&
+      window.location.hostname !== CANONICAL_HOST
+    ) {
+      window.location.replace(
+        "https://" + CANONICAL_HOST + window.location.pathname + window.location.search + window.location.hash
+      );
+    }
+
+    const translations = {
+      de: {
+        headerTagline: "Die fehlende Schicht zwischen Cobot und produktiver Aufgabe",
+        heroEyebrow: "AI-native Cobot Orchestrierung",
+        heroTitle: "Dein Cobot kann greifen. <strong>Wir bringen ihm bei, die ganze Schicht zu uebernehmen.</strong>",
+        heroCopy: "VLA-Modelle koennen einzelne Skills wie Greifen oder Schleifen. BuilderLayer macht daraus robuste Multi-Step-Workflows mit Logik, Fehlerbehandlung und Compliance.",
+        badgeOne: "AI-native",
+        badgeTwo: "Hardware-agnostisch",
+        badgeThree: "KMU-first",
+        heroCtaPrimary: "20-30 Min. Austausch buchen",
+        heroCtaSecondary: "Problem verstehen",
+        problemHeading: "Das Problem",
+        problemLead: "Cobots lernen schnell einzelne Handgriffe. In der Praxis braucht der Mittelstand aber keine Einzelskills, sondern <strong>zuverlaessige Prozessketten</strong>.",
+        problemStatement: "Ein Skill ist keine Aufgabe. Eine Aufgabe ist eine Kette aus Skills, Kontext, Entscheidungen und Recovery.",
+        flowOne: "Schleifen",
+        flowTwo: "QA-Check",
+        flowThree: "Nachschleifen",
+        flowFour: "Palettieren",
+        flowFive: "Naechster Job",
+        problemOutro: "Genau diese Orchestrierung fehlt heute: Der Roboter kann einen Schritt. Aber nicht die komplette Schicht.",
+        solutionHeading: "Unsere Loesung",
+        solutionLead: "BuilderLayer ist die Orchestrierungsschicht zwischen natuerlicher Sprache, AI-Modellen und Cobot-Hardware. Fuer Betriebe mit 1-50 Cobots, ohne eigenes Robotik-Team.",
+        pillarOneTitle: "Workflow-Builder",
+        pillarOneBody: "Aufgaben in natuerlicher Sprache beschreiben statt Robotik-Code schreiben.",
+        pillarTwoTitle: "Cross-Embodiment Engine",
+        pillarTwoBody: "Ein Workflow laeuft auf UR, Dobot, Fanuc oder Franka mit Hardware-Abstraktion.",
+        pillarThreeTitle: "Compliance by Design",
+        pillarThreeBody: "EU AI Act Readiness, Logging und Governance direkt im Ablauf integriert.",
+        layerTopTitle: "Natuerliche Sprache / UI",
+        layerTopBody: "Aufgabe beschreiben: Schleifen, pruefen, palettieren",
+        layerMidTitle: "BuilderLayer Orchestrator",
+        layerMidBody: "Reasoning, Error-Recovery, Monitoring, Compliance",
+        layerLowTitle: "Hardware-Abstraktionsschicht",
+        layerLowBody: "UR | Fanuc | Dobot | Franka | weitere",
+        marketHeading: "Warum jetzt",
+        marketLead: "Der Cobot-Markt waechst mit 23-33% CAGR, gleichzeitig fehlen Fachkraefte und praktikable Software-Loesungen fuer KMUs.",
+        whyOne: "Cobot-Markt 2025 bis 2034 mit starkem Wachstum",
+        whyTwo: "VLA-Modelle sind fuer Einzelskills nutzbar",
+        whyThree: "Fachkraeftemangel trifft Fertigungsbetriebe direkt",
+        whyFour: "EU AI Act belohnt integrierte Compliance",
+        whyFive: "Offene Hardware-APIs machen Integrationen schneller",
+        statOneValue: "250.000+",
+        statOneLabel: "KMUs in Europa mit Automationsdruck",
+        statTwoValue: "~120-225M $",
+        statTwoLabel: "SAM fuer europaeische KMU-Cobot-Software",
+        statThreeValue: "0",
+        statThreeLabel: "Einfache Multi-Step-Loesungen fuer KMUs heute",
+        marketTail: "BuilderLayer kombiniert <strong>Einfachheit + Hardware-Agnostik + Multi-Step-Orchestrierung</strong> in einem Produkt.",
+        founderHeading: "Gruender",
+        founderName: "Marcus Roeper",
+        founderRole: "Gruender, BuilderLayer",
+        founderBio: "Mehrjaehrige Erfahrung in industrieller KI, Aufbau einer AI-Abteilung in der Automatisierung, begleitet bis zum Exit an Dassault Systemes. Fokus heute: intelligente Robotik fuer den Mittelstand.",
+        credOneTitle: "Seriengruender",
+        credOneBody: "Startup seit 2019 durch Aufbau, Lernkurven und Pivot-Phasen gefuehrt.",
+        credTwoTitle: "Industrie-AI Leadership",
+        credTwoBody: "KI in reale Fertigungsprozesse gebracht, nicht nur in Labordemos.",
+        credThreeTitle: "Ausgezeichnete Loesungen",
+        credThreeBody: "Deutscher KI-Innovationspreis 2023 fuer angewandte KI.",
+        credFourTitle: "Starkes Netzwerk",
+        credFourBody: "Verbindungen in Forschung, Industrie und Politik.",
+        callHeading: "Lass uns ueber deinen Fertigungsalltag sprechen",
+        callBody: "Ich suche den ehrlichen Austausch mit Produktionsverantwortlichen aus dem Mittelstand: Wo helfen intelligente Cobots heute wirklich und wo nicht?",
+        callMetaOne: "Dauer: 20-30 Minuten",
+        callMetaTwo: "Format: Telefon, Video oder vor Ort",
+        callMetaThree: "Vertraulich und praxisnah",
+        callCta: "Gespaech starten",
+        footerLeft: "BuilderLayer | AI-native Orchestrierung fuer Cobots",
+        footerRight: "Kontakt: marcus@builderlayer.com"
+      },
+      en: {
+        headerTagline: "The missing layer between cobots and productive work",
+        heroEyebrow: "AI-native Cobot Orchestration",
+        heroTitle: "Your cobot can grasp. <strong>We teach it to run the whole shift.</strong>",
+        heroCopy: "VLA models can solve single skills like grasping or grinding. BuilderLayer turns those skills into reliable multi-step workflows with logic, error handling and compliance.",
+        badgeOne: "AI-native",
+        badgeTwo: "Hardware-agnostic",
+        badgeThree: "SME-first",
+        heroCtaPrimary: "Book a 20-30 min call",
+        heroCtaSecondary: "See the problem",
+        problemHeading: "The Problem",
+        problemLead: "Cobots are getting better at isolated actions. SMEs do not need isolated actions, they need <strong>reliable end-to-end process chains</strong>.",
+        problemStatement: "A skill is not a task. A task is a chain of skills, context, decisions and recovery.",
+        flowOne: "Grinding",
+        flowTwo: "QA Check",
+        flowThree: "Rework",
+        flowFour: "Palletizing",
+        flowFive: "Next Job",
+        problemOutro: "This orchestration layer is still missing: the robot can do one step, but not the full shift.",
+        solutionHeading: "Our Solution",
+        solutionLead: "BuilderLayer is the orchestration layer between natural language, AI models and cobot hardware. Built for SMEs with 1-50 cobots and no in-house robotics team.",
+        pillarOneTitle: "Workflow Builder",
+        pillarOneBody: "Describe tasks in natural language instead of writing robotics code.",
+        pillarTwoTitle: "Cross-Embodiment Engine",
+        pillarTwoBody: "Run one workflow across UR, Dobot, Fanuc or Franka through hardware abstraction.",
+        pillarThreeTitle: "Compliance by Design",
+        pillarThreeBody: "EU AI Act readiness, logging and governance integrated into execution.",
+        layerTopTitle: "Natural Language / UI",
+        layerTopBody: "Describe the task: grind, inspect, palletize",
+        layerMidTitle: "BuilderLayer Orchestrator",
+        layerMidBody: "Reasoning, error recovery, monitoring, compliance",
+        layerLowTitle: "Hardware Abstraction Layer",
+        layerLowBody: "UR | Fanuc | Dobot | Franka | more",
+        marketHeading: "Why Now",
+        marketLead: "The cobot market is growing at 23-33% CAGR, while SMEs still lack practical orchestration software and robotics talent.",
+        whyOne: "Cobot market growth from 2025 to 2034 is accelerating",
+        whyTwo: "VLA models are now good enough for single skills",
+        whyThree: "Talent shortage increases pressure in production",
+        whyFour: "EU AI Act favors built-in compliance",
+        whyFive: "Open hardware APIs make integration faster",
+        statOneValue: "250,000+",
+        statOneLabel: "European SMEs under automation pressure",
+        statTwoValue: "$120-225M",
+        statTwoLabel: "SAM in European SME cobot software",
+        statThreeValue: "0",
+        statThreeLabel: "Simple multi-step SME solutions today",
+        marketTail: "BuilderLayer combines <strong>simplicity + hardware agnosticism + multi-step orchestration</strong> in one product.",
+        founderHeading: "Founder",
+        founderName: "Marcus Roeper",
+        founderRole: "Founder, BuilderLayer",
+        founderBio: "Multiple years in industrial AI, built an AI department in industrial automation and supported the path to an exit to Dassault Systemes. Current focus: practical robotics intelligence for SMEs.",
+        credOneTitle: "Repeat Founder",
+        credOneBody: "Built startups since 2019 through growth, pivots and execution pressure.",
+        credTwoTitle: "Industrial AI Leadership",
+        credTwoBody: "Delivered AI inside real production lines, not only in demos.",
+        credThreeTitle: "Award-Winning Work",
+        credThreeBody: "German AI Innovation Award 2023 for applied AI.",
+        credFourTitle: "Strong Network",
+        credFourBody: "Active access across research, industry and policy.",
+        callHeading: "Let us talk about your production reality",
+        callBody: "I am looking for direct conversations with SME production leaders: where do intelligent cobots help today, and where do they still fail?",
+        callMetaOne: "Length: 20-30 minutes",
+        callMetaTwo: "Format: Phone, video or on-site",
+        callMetaThree: "Confidential and practical",
+        callCta: "Start a conversation",
+        footerLeft: "BuilderLayer | AI-native orchestration for cobots",
+        footerRight: "Contact: marcus@builderlayer.com"
+      }
+    };
+
+    const nodes = document.querySelectorAll("[data-i18n], [data-i18n-html]");
+    const buttons = document.querySelectorAll(".lang-btn");
+
+    function applyLanguage(lang) {
+      const current = translations[lang] ? lang : "de";
+      document.documentElement.lang = current;
+      localStorage.setItem("builderlayer-language", current);
+
+      buttons.forEach((button) => {
+        const pressed = button.dataset.lang === current;
+        button.setAttribute("aria-pressed", String(pressed));
+      });
+
+      nodes.forEach((node) => {
+        const key = node.dataset.i18n || node.dataset.i18nHtml;
+        const value = translations[current][key];
+        if (!value) {
+          return;
+        }
+
+        if (node.dataset.i18nHtml) {
+          node.innerHTML = value;
+        } else {
+          node.textContent = value;
+        }
+      });
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => applyLanguage(button.dataset.lang));
+    });
+
+    const saved = localStorage.getItem("builderlayer-language") || "de";
+    applyLanguage(saved);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.14 }
+    );
+
+    document.querySelectorAll(".reveal").forEach((section) => observer.observe(section));
+  </script>
+</body>
+</html>
