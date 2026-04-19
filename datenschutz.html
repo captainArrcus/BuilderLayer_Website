@@ -359,19 +359,25 @@ Mampf Einzelunternehmen<br>Bli Bla<br>Blub 333<br>12345
 	</main>
 
 	<script>
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						entry.target.classList.add("in");
-						observer.unobserve(entry.target);
-					}
-				});
-			},
-			{ threshold: 0.14 }
-		);
+		const revealTargets = document.querySelectorAll(".reveal");
 
-		document.querySelectorAll(".reveal").forEach((section) => observer.observe(section));
+		if (!("IntersectionObserver" in window)) {
+			revealTargets.forEach((section) => section.classList.add("in"));
+		} else {
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting) {
+							entry.target.classList.add("in");
+							observer.unobserve(entry.target);
+						}
+					});
+				},
+				{ threshold: 0.01 }
+			);
+
+			revealTargets.forEach((section) => observer.observe(section));
+		}
 	</script>
 </body>
 </html>
